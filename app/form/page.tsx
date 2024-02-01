@@ -6,6 +6,7 @@ import { useEffect, useReducer } from "react";
 import Footer from "@/components/Footer/Footer";
 import Slider from "@/components/Slider/Slider";
 import Banner from "@/components/Banner/Banner";
+import { customApiPost, customApiGet, connectToMongo } from "@/mongo";
 
 enum Cases {
   toggleShowHeader = "toggleShowHeader",
@@ -22,7 +23,8 @@ enum Cases {
   handleMenuChange = "handleMenuChange",
   handleFooterLinkChange = "handleFooterLinkChange",
   addFooterLink = "addFooterLink",
-  removeFooterLink = "removeFooterLink"
+  removeFooterLink = "removeFooterLink",
+  setFormState = "setFormState",
 }
 
 const initialFormValues = {
@@ -45,14 +47,14 @@ const initialFormValues = {
       name: "first",
       value: "",
       linkValue: "",
-      linkName: "l1"
+      linkName: "l1",
     },
     {
       label: "Second Menu",
       name: "second",
       value: "",
       linkValue: "",
-      linkName: "l2"
+      linkName: "l2",
     },
   ],
   footerLinks: [
@@ -70,6 +72,12 @@ const initialFormValues = {
 const page = () => {
   const formReducer = (form: any, action: any) => {
     switch (action?.type) {
+      case Cases.setFormState: {
+        return {
+          ...form,
+          ...action.form,
+        };
+      }
       case Cases.toggleShowHeader: {
         return {
           ...form,
@@ -123,13 +131,19 @@ const page = () => {
           (menu: any) => menu.name === action.name
         )[0];
         if (action.change === "text") {
-          const editedMenu = { ...menuToEdit, value: action.event.target.value };
+          const editedMenu = {
+            ...menuToEdit,
+            value: action.event.target.value,
+          };
           copiedArray.splice(action.index, 1, editedMenu);
         } else if (action.change === "link") {
-          const editedMenu = { ...menuToEdit, linkValue: action.event.target.value };
+          const editedMenu = {
+            ...menuToEdit,
+            linkValue: action.event.target.value,
+          };
           copiedArray.splice(action.index, 1, editedMenu);
         }
-       
+
         return {
           ...form,
           menus: [...copiedArray],
@@ -198,7 +212,7 @@ const page = () => {
         };
       }
 
-      case Cases.removeFooterLink : {
+      case Cases.removeFooterLink: {
         const copiedArray = [...form.footerLinks];
         copiedArray.splice(action.index, 1);
         return {
@@ -211,10 +225,31 @@ const page = () => {
 
   const [form, dispatch] = useReducer(formReducer, initialFormValues);
 
-  console.log("form!!", form);
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    const apiResponse = await customApiPost({
+      endPoint: "api",
+      bodyData: form,
+    });
+  };
+
+  const fetchConfigurations = async () => {
+    const apiResponse = await customApiGet({ endPoint: "api" });
+    console.log("apiResponse", apiResponse);
+
+    dispatch({ type: Cases.setFormState, form: apiResponse?.data[0] });
+  };
+
+  useEffect(() => {
+    fetchConfigurations();
+  }, []);
 
   return (
     <form>
+      <button onClick={handleSubmit} className="submit-btn">
+        Submit
+      </button>
       <main className="page-wrapper">
         <div className="left">
           <p>Header Configuration</p>
@@ -271,7 +306,10 @@ const page = () => {
             <p>Menus</p>
             <div className="form-label">
               {form?.menus?.map(
-                ({ label, name, value, linkValue , linkName}: any, index: number) => {
+                (
+                  { label, name, value, linkValue, linkName }: any,
+                  index: number
+                ) => {
                   return (
                     <div className="flex a-center menuItem">
                       <div className="flex flex-col">
@@ -291,19 +329,19 @@ const page = () => {
                           name={name}
                         />
                         <input
-                        value={linkValue}
-                        placeholder="link"
-                        onChange={(e) =>
-                          dispatch({
-                            type: Cases.handleMenuChange,
-                            event: e,
-                            index,
-                            change: "link",
-                            name,
-                          })
-                        }
-                        name={linkName}
-                      />
+                          value={linkValue}
+                          placeholder="link"
+                          onChange={(e) =>
+                            dispatch({
+                              type: Cases.handleMenuChange,
+                              event: e,
+                              index,
+                              change: "link",
+                              name,
+                            })
+                          }
+                          name={linkName}
+                        />
                       </div>
                       <div
                         className="pointer"
@@ -596,7 +634,7 @@ const page = () => {
                       onClick={() =>
                         dispatch({
                           type: Cases.removeFooterLink,
-                          index
+                          index,
                         })
                       }
                     >

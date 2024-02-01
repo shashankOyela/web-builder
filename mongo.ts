@@ -1,34 +1,44 @@
-import { MongoClient, MongoClientOptions } from "mongodb";
+import mongoose from "mongoose";
 
-// const { MONGODB_URI, MONGODB_DB } = process.env;
-const MONGODB_URI: any = process.env.MONGO_URI;
-const MONGODB_DB: any = process.env.MONGODB_DB;
+const customApiPost = async ({ endPoint, bodyData }: any) => {
+  try {
+    const response = await fetch(`/${endPoint}`, {
+      method: "POST",
+      body: JSON.stringify(bodyData),
+    });
 
-if (!MONGODB_URI || !MONGODB_DB) {
-  throw new Error(
-    "Please define the MONGODB_URI and MONGODB_DB environment variables inside .env.local"
-  );
-}
+    const resResponse = await response.json();
 
-let cachedClient: any = null;
-let cachedDb: any = null;
-export async function connectToDatabase() {
-  if (cachedClient && cachedDb) {
-    return { client: cachedClient, db: cachedDb };
+    return resResponse;
+  } catch (error) {
+    console.log("custom api error", error);
   }
+};
 
-  // Remove useNewUrlParser from options
-  const client = await MongoClient.connect(MONGODB_URI, {
-    // Add any other options you may need
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  } as MongoClientOptions);
+const customApiGet = async ({ endPoint }: any) => {
+  try {
+    const response = await fetch(`/${endPoint}`, {
+      method: "GET",
+    });
 
-  const db = await client.db(MONGODB_DB);
+    const resResponse = await response.json();
 
-  cachedClient = client;
-  cachedDb = db;
+    return resResponse;
+  } catch (error) {
+    console.log("custom api error", error);
+  }
+};
 
-  return { client, db };
-}
-export default connectToDatabase;
+const connectToMongo = async () => {
+  const MONGODB_URI = process.env.MONGO_URI || "";
+  let client;
+
+  try {
+    client = await mongoose.connect(MONGODB_URI);
+    console.log("db connected");
+  } catch (error) {
+    console.log("db could not be connected", error);
+  }
+};
+
+export { customApiPost, customApiGet, connectToMongo };

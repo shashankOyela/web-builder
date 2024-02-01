@@ -38,7 +38,6 @@ module.exports = {
   reactStrictMode: false,
   pageExtensions: ["mdx", "md", "jsx", "js", "tsx", "ts"],
   experimental: {
-    appDir: true,
     serverComponentsExternalPackages: ["mongoose"],
   },
 };
