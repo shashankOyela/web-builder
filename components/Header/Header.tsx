@@ -2,23 +2,14 @@ import React from "react";
 import "./header.css";
 import Image from "next/image";
 
-const Header = ({ data, showLogo }: any) => {
+const Header = ({ data, showLogo , menus}: any) => {
   return (
     <div className="header">
       <div className="left-menu">left Menu</div>
       <div className="menus">
-        <a className="menu-item" href={data?.menuItem1Val}>
-          {data?.menuItem1}
-        </a>
-        <a className="menu-item" href={data?.menuItem2Val}>
-          {data?.menuItem2}
-        </a>
-        <a className="menu-item" href={data?.menuItem3Val}>
-          {data?.menuItem3}
-        </a>
-        <a className="menu-item" href={data?.menuItem4Val}>
-          {data?.menuItem4}
-        </a>
+        {menus?.map(({value , link } : any) => <a className="menu-item" href={link}>
+          {value}
+        </a> )}
       </div>
       {showLogo && (
         <div className="logo-wrapper">
