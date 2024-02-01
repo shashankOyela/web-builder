@@ -5,16 +5,20 @@ import "./form.css";
 import { useState } from "react";
 import Footer from "@/components/Footer/Footer";
 import Slider from "@/components/Slider/Slider";
+import Banner from "@/components/Banner/Banner";
 
 const page = () => {
   const [showHeader, setShowHeader] = useState<boolean>(true);
   const [showLogo, setShowLogo] = useState<boolean>(true);
+  const [showBanner, setShowBanner] = useState<boolean>(true);
   const [showSlider, setShowSlider] = useState<boolean>(true);
   const [header, setHeader] = useState<any>({
     logoUrl:
       "https://public-oyela-cms-prod.s3.ap-south-1.amazonaws.com/7_bce21bf9e3.jpg",
     showLogo: true,
   });
+  const [slider, setSlider] = useState<any>({});
+  const [banner, setBanner] = useState<any>({});
   const [showFooter, setShowFooter] = useState<boolean>(true);
   const [footer, setFooter] = useState<any>({});
 
@@ -36,10 +40,28 @@ const page = () => {
     });
   };
 
+  const handleSliderChange = (e: any) => {
+    e.preventDefault();
+    const name = e.target.name;
+    setSlider({
+      ...slider,
+      [name]: e.target.value,
+    });
+  };
+
+  const handleBannerChange = (e: any) => {
+    e.preventDefault();
+    const name = e.target.name;
+    setBanner({
+      ...banner,
+      [name]: e.target.value,
+    });
+  };
+
   return (
     <main className="page-wrapper">
       <div className="left">
-        <p>Header Configuration</p>
+        <p className="section-heading">Header Configuration</p>
         <form className="form-container">
           <div className="form-label">
             <div>
@@ -139,7 +161,7 @@ const page = () => {
           </div>
         </form>
 
-        <p>Slider Configuration</p>
+        <p className="section-heading">Slider Configuration</p>
         <form className="form-container">
           <div className="form-label">
             <div>
@@ -153,72 +175,142 @@ const page = () => {
               Show/Hide
             </div>
           </div>
+          <div className="form-label">
+            <label>Slide Duration(in ms)</label>
+            <input
+              value={slider?.slideDuration}
+              placeholder="slide Duration"
+              type="number"
+              onChange={handleSliderChange}
+              name="slideDuration"
+            />
+          </div>
           <div className="form-label-wrapper">
             <p>Slides</p>
             <div className="form-label">
               <label>Slide 1</label>
               <input
-                value={footer?.link1}
+                value={slider?.slide1Heading}
                 placeholder="text"
-                onChange={handleFooterChange}
-                name="link1"
+                onChange={handleSliderChange}
+                name="slide1Heading"
               />
               <input
-                value={footer?.link1Val}
-                placeholder="link"
-                onChange={handleFooterChange}
-                name="link1Val"
+                value={slider?.slide1Image}
+                placeholder="slideImage"
+                onChange={handleSliderChange}
+                name="slide1Image"
+              />
+              <input
+                value={slider?.slide1Link}
+                placeholder="slideLink"
+                onChange={handleSliderChange}
+                name="slide1Link"
               />
             </div>
             <div className="form-label">
               <label>Slide 2</label>
               <input
-                value={footer?.link2}
+                value={slider?.slide2Heading}
                 placeholder="text"
-                onChange={handleFooterChange}
-                name="link2"
+                onChange={handleSliderChange}
+                name="slide2Heading"
               />
               <input
-                value={footer?.link2Val}
-                placeholder="link"
-                onChange={handleFooterChange}
-                name="link2Val"
+                value={slider?.slide2Image}
+                placeholder="slideImage"
+                onChange={handleSliderChange}
+                name="slide2Image"
+              />
+              <input
+                value={slider?.slide2Link}
+                placeholder="slideLink"
+                onChange={handleSliderChange}
+                name="slide2Link"
               />
             </div>
             <div className="form-label">
               <label>Slide 3</label>
               <input
-                value={footer?.link3}
+                value={slider?.slide3Heading}
                 placeholder="text"
-                onChange={handleFooterChange}
-                name="link3"
+                onChange={handleSliderChange}
+                name="slide3Heading"
               />
               <input
-                value={footer?.link3Val}
-                placeholder="link"
-                onChange={handleFooterChange}
-                name="link3Val"
+                value={slider?.slide3Image}
+                placeholder="slideImage"
+                onChange={handleSliderChange}
+                name="slide3Image"
+              />
+              <input
+                value={slider?.slide3Link}
+                placeholder="slideLink"
+                onChange={handleSliderChange}
+                name="slide3Link"
               />
             </div>
             <div className="form-label">
               <label>Slide 4</label>
               <input
-                value={footer?.link4}
+                value={slider?.slide4Heading}
                 placeholder="text"
-                onChange={handleFooterChange}
-                name="link4"
+                onChange={handleSliderChange}
+                name="slide4Heading"
               />
               <input
-                value={footer?.link4Val}
-                placeholder="link"
-                onChange={handleFooterChange}
-                name="link4Val"
+                value={slider?.slide4Image}
+                placeholder="slideImage"
+                onChange={handleSliderChange}
+                name="slide4Image"
+              />
+              <input
+                value={slider?.slide4Link}
+                placeholder="slideLink"
+                onChange={handleSliderChange}
+                name="slide4Link"
               />
             </div>
           </div>
         </form>
 
-        <p>Footer Configuration</p>
+        <p className="section-heading">Banner Configuration</p>
+        <form className="form-container">
+          <div className="form-label">
+            <div>
+              <label>Banner : </label>
+              <input
+                type="checkbox"
+                onChange={() => setShowBanner(!showBanner)}
+                name="showBanner"
+                checked={showBanner}
+              />{" "}
+              Show/Hide
+            </div>
+          </div>
+          <div className="form-label-wrapper">
+            <div className="form-label">
+              <label>Banner Image</label>
+              <input
+                name="bannerImage"
+                type="text"
+                value={banner?.bannerImage}
+                onChange={handleBannerChange}
+              />
+            </div>
+            <div className="form-label">
+              <label>Banner Heading</label>
+              <input
+                type="text"
+                name="bannerHeading"
+                value={banner?.heading}
+                onChange={handleBannerChange}
+              />
+            </div>
+          </div>
+        </form>
+
+        <p className="section-heading">Footer Configuration</p>
         <form className="form-container">
           <div className="form-label">
             <div>
@@ -300,7 +392,8 @@ const page = () => {
       <div className="right">
         <div className="right-container">
           {showHeader && <Header data={header} showLogo={showLogo} />}
-          {showSlider && <Slider />}
+          {showSlider && <Slider data={slider} />}
+          {showBanner && <Banner data={banner} />}
           {showFooter && (
             <div className="footer-wrapper">
               <Footer
