@@ -5,10 +5,17 @@
     height: 95vh;
 }
 
+.section-heading {
+    font-weight: 500;
+    font-size: 18px;
+}
+
 .left {
     border-right: 1px solid gray;
     padding-right: 10px;
     width: 20%;
+    height: 99vh;
+    overflow-y: auto;
 }
 
 .right {
@@ -31,4 +38,10 @@
 .right-container {
     position: relative;
     height: 100%;
+}
+
+.form-label-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
