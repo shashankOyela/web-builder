@@ -17,6 +17,9 @@ enum Cases {
   handleSliderChange = "handleSliderChange",
   toggleShowBanner = "toggleShowBanner",
   handleBannerChange = "handleBannerChange",
+  addMenu = "addMenu",
+  removeMenu = "removeMenu",
+  handleMenuChange = "handleMenuChange",
 }
 
 const initialFormValues = {
@@ -33,6 +36,20 @@ const initialFormValues = {
   footer: {},
   banner: {},
   slider: {},
+  menus: [
+    {
+      label: "First label",
+      name: "first",
+      value: "",
+      link: ""
+    },
+    {
+      label: "Second label",
+      name: "second",
+      value: "",
+      link: ""
+    },
+  ],
 };
 
 const page = () => {
@@ -84,6 +101,18 @@ const page = () => {
         const name = action.event.target.name;
         const value = action.event.target.value;
         return { ...form, banner: { ...form.banner, [name]: value } };
+      }
+      case Cases.handleMenuChange: {
+        const menuToEdit = form.menus.filter(
+          (menu: any) => menu.name === action.name
+        )[0];
+        const editedMenu = { ...menuToEdit, value: action.event.target.value };
+        const copiedArray = [...form.menus];
+        copiedArray.splice(action.index, 1, editedMenu);
+        return {
+          ...form,
+          menus: [...copiedArray],
+        };
       }
     }
   };
@@ -147,105 +176,30 @@ const page = () => {
           <div className="form-label-wrapper">
             <p>Menus</p>
             <div className="form-label">
-              <label>Menu Item 1</label>
-              <input
-                value={form?.header?.menuItem1}
-                placeholder="text"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleHeaderChange,
-                    event: e,
-                  })
+            {form?.menus?.map(
+                ({ label, name, value , link}: any, index: number) => {
+                  return (
+                    <>
+                      <label>{label}</label>
+                      <input
+                        value={value}
+                        placeholder="text"
+                        onChange={(e) =>
+                          dispatch({
+                            type: Cases.handleMenuChange,
+                            event: e,
+                            name,
+                            index,
+                          })
+                        }
+                        name={name}
+                      />
+                    </>
+                  );
                 }
-                name="menuItem1"
-              />
-              <input
-                value={form?.header?.menuItem1Val}
-                placeholder="link"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleHeaderChange,
-                    event: e,
-                  })
-                }
-                name="menuItem1Val"
-              />
+              )}
             </div>
-            <div className="form-label">
-              <label>Menu Item 2</label>
-              <input
-                value={form?.header?.menuItem2}
-                placeholder="text"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleHeaderChange,
-                    event: e,
-                  })
-                }
-                name="menuItem2"
-              />
-              <input
-                value={form?.header?.menuItem2Val}
-                placeholder="link"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleHeaderChange,
-                    event: e,
-                  })
-                }
-                name="menuItem2Val"
-              />
-            </div>
-            <div className="form-label">
-              <label>Menu Item 3</label>
-              <input
-                value={form?.header?.menuItem3}
-                placeholder="text"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleHeaderChange,
-                    event: e,
-                  })
-                }
-                name="menuItem3"
-              />
-              <input
-                value={form?.header?.menuItem3Val}
-                placeholder="link"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleHeaderChange,
-                    event: e,
-                  })
-                }
-                name="menuItem3Val"
-              />
-            </div>
-            <div className="form-label">
-              <label>Menu Item 4</label>
-              <input
-                value={form?.header?.menuItem4}
-                placeholder="text"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleHeaderChange,
-                    event: e,
-                  })
-                }
-                name="menuItem4"
-              />
-              <input
-                value={form?.header?.menuItem4Val}
-                placeholder="link"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleHeaderChange,
-                    event: e,
-                  })
-                }
-                name="menuItem4Val"
-              />
-            </div>
+        
           </div>
 
           <p className="section-heading">Slider Configuration</p>
@@ -604,7 +558,7 @@ const page = () => {
         <div className="right">
           <div className="right-container">
             {form.showHeader && (
-              <Header data={form?.header} showLogo={form.showLogo} />
+              <Header data={form?.header} showLogo={form.showLogo} menus={form?.menus} />
             )}
             {form?.showSlider && <Slider data={form?.slider} />}
             {form?.showBanner && <Banner data={form?.banner} />}
