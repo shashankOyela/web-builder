@@ -20,6 +20,9 @@ enum Cases {
   addMenu = "addMenu",
   removeMenu = "removeMenu",
   handleMenuChange = "handleMenuChange",
+  handleFooterLinkChange = "handleFooterLinkChange",
+  addFooterLink = "addFooterLink",
+  removeFooterLink = "removeFooterLink"
 }
 
 const initialFormValues = {
@@ -38,16 +41,28 @@ const initialFormValues = {
   slider: {},
   menus: [
     {
-      label: "First label",
+      label: "First Menu",
       name: "first",
       value: "",
-      link: ""
+      linkValue: "",
+      linkName: "l1"
     },
     {
-      label: "Second label",
+      label: "Second Menu",
       name: "second",
       value: "",
-      link: ""
+      linkValue: "",
+      linkName: "l2"
+    },
+  ],
+  footerLinks: [
+    {
+      name: "name0",
+      linkName: "link0",
+      label: "Link 1",
+      link: "link",
+      value: "",
+      linkValue: "",
     },
   ],
 };
@@ -103,21 +118,100 @@ const page = () => {
         return { ...form, banner: { ...form.banner, [name]: value } };
       }
       case Cases.handleMenuChange: {
+        const copiedArray = [...form.menus];
         const menuToEdit = form.menus.filter(
           (menu: any) => menu.name === action.name
         )[0];
-        const editedMenu = { ...menuToEdit, value: action.event.target.value };
-        const copiedArray = [...form.menus];
-        copiedArray.splice(action.index, 1, editedMenu);
+        if (action.change === "text") {
+          const editedMenu = { ...menuToEdit, value: action.event.target.value };
+          copiedArray.splice(action.index, 1, editedMenu);
+        } else if (action.change === "link") {
+          const editedMenu = { ...menuToEdit, linkValue: action.event.target.value };
+          copiedArray.splice(action.index, 1, editedMenu);
+        }
+       
         return {
           ...form,
           menus: [...copiedArray],
+        };
+      }
+      case Cases.addMenu: {
+        return {
+          ...form,
+          menus: [
+            ...form.menus,
+            {
+              label: "Menu",
+              name: "second",
+              value: "",
+              link: "",
+            },
+          ],
+        };
+      }
+      case Cases.removeMenu: {
+        const copiedArray = [...form.menus];
+        copiedArray.splice(action.index, 1);
+        return {
+          ...form,
+          menus: [...copiedArray],
+        };
+      }
+      case Cases.handleFooterLinkChange: {
+        const copiedArray = [...form.footerLinks];
+        const linkToEdit = form.footerLinks.filter(
+          (footerLink: any) => footerLink.name === action.name
+        )[0];
+        if (action.change === "text") {
+          const editedLink = {
+            ...linkToEdit,
+            value: action.event.target.value,
+          };
+          copiedArray.splice(action.index, 1, editedLink);
+        } else if (action.change === "link") {
+          const editedLink = {
+            ...linkToEdit,
+            linkValue: action.event.target.value,
+          };
+          copiedArray.splice(action.index, 1, editedLink);
+        }
+        return {
+          ...form,
+          footerLinks: [...copiedArray],
+        };
+      }
+
+      case Cases.addFooterLink: {
+        return {
+          ...form,
+          footerLinks: [
+            ...form.footerLinks,
+            {
+              name: "name10",
+              linkName: "link10",
+              label: "Link 1",
+              link: "link",
+              value: "",
+              linkValue: "",
+            },
+          ],
+        };
+      }
+
+      case Cases.removeFooterLink : {
+        const copiedArray = [...form.footerLinks];
+        copiedArray.splice(action.index, 1);
+        return {
+          ...form,
+          footerLinks: [...copiedArray],
         };
       }
     }
   };
 
   const [form, dispatch] = useReducer(formReducer, initialFormValues);
+
+  console.log("form!!", form);
 
   return (
     <form>
@@ -176,30 +270,67 @@ const page = () => {
           <div className="form-label-wrapper">
             <p>Menus</p>
             <div className="form-label">
-            {form?.menus?.map(
-                ({ label, name, value , link}: any, index: number) => {
+              {form?.menus?.map(
+                ({ label, name, value, linkValue , linkName}: any, index: number) => {
                   return (
-                    <>
-                      <label>{label}</label>
-                      <input
-                        value={value}
-                        placeholder="text"
+                    <div className="flex a-center menuItem">
+                      <div className="flex flex-col">
+                        <label>{label}</label>
+                        <input
+                          value={value}
+                          placeholder="text"
+                          onChange={(e) =>
+                            dispatch({
+                              type: Cases.handleMenuChange,
+                              event: e,
+                              name,
+                              index,
+                              change: "text",
+                            })
+                          }
+                          name={name}
+                        />
+                        <input
+                        value={linkValue}
+                        placeholder="link"
                         onChange={(e) =>
                           dispatch({
                             type: Cases.handleMenuChange,
                             event: e,
+                            index,
+                            change: "link",
                             name,
+                          })
+                        }
+                        name={linkName}
+                      />
+                      </div>
+                      <div
+                        className="pointer"
+                        onClick={() =>
+                          dispatch({
+                            type: Cases.removeMenu,
                             index,
                           })
                         }
-                        name={name}
-                      />
-                    </>
+                      >
+                        -
+                      </div>
+                    </div>
                   );
                 }
               )}
             </div>
-        
+            <div
+              className="pointer"
+              onClick={() =>
+                dispatch({
+                  type: Cases.addMenu,
+                })
+              }
+            >
+              +
+            </div>
           </div>
 
           <p className="section-heading">Slider Configuration</p>
@@ -453,112 +584,79 @@ const page = () => {
           </div>
           <div className="form-label-wrapper">
             <p>Footer Links</p>
-            <div className="form-label">
-              <label>Link 1</label>
-              <input
-                value={form?.footer?.link1}
-                placeholder="text"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleFooterChange,
-                    event: e,
-                  })
-                }
-                name="link1"
-              />
-              <input
-                value={form?.footer?.link1Val}
-                placeholder="link"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleFooterChange,
-                    event: e,
-                  })
-                }
-                name="link1Val"
-              />
-            </div>
-            <div className="form-label">
-              <label>Link 2</label>
-              <input
-                value={form?.footer?.link2}
-                placeholder="text"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleFooterChange,
-                    event: e,
-                  })
-                }
-                name="link2"
-              />
-              <input
-                value={form?.footer?.link2Val}
-                placeholder="link"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleFooterChange,
-                    event: e,
-                  })
-                }
-                name="link2Val"
-              />
-            </div>
-            <div className="form-label">
-              <label>Link 3</label>
-              <input
-                value={form?.footer?.link3}
-                placeholder="text"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleFooterChange,
-                    event: e,
-                  })
-                }
-                name="link3"
-              />
-              <input
-                value={form?.footer?.link3Val}
-                placeholder="link"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleFooterChange,
-                    event: e,
-                  })
-                }
-                name="link3Val"
-              />
-            </div>
-            <div className="form-label">
-              <label>Link 4</label>
-              <input
-                value={form?.footer?.link4}
-                placeholder="text"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleFooterChange,
-                    event: e,
-                  })
-                }
-                name="link4"
-              />
-              <input
-                value={form?.footer?.link4Val}
-                placeholder="link"
-                onChange={(e) =>
-                  dispatch({
-                    type: Cases.handleFooterChange,
-                    event: e,
-                  })
-                }
-                name="link4Val"
-              />
+            {form?.footerLinks?.map(
+              (
+                { name, link, value, label, linkName, linkValue }: any,
+                index: number
+              ) => {
+                return (
+                  <div className="flex">
+                    <div
+                      className="pointer"
+                      onClick={() =>
+                        dispatch({
+                          type: Cases.removeFooterLink,
+                          index
+                        })
+                      }
+                    >
+                      -
+                    </div>
+                    <div className="form-label">
+                      <label>{label}</label>
+                      <input
+                        value={value}
+                        placeholder="text"
+                        onChange={(e) =>
+                          dispatch({
+                            type: Cases.handleFooterLinkChange,
+                            event: e,
+                            index,
+                            change: "text",
+                            name,
+                          })
+                        }
+                        name={name}
+                      />
+                      <input
+                        value={linkValue}
+                        placeholder="link"
+                        onChange={(e) =>
+                          dispatch({
+                            type: Cases.handleFooterLinkChange,
+                            event: e,
+                            index,
+                            change: "link",
+                            name,
+                          })
+                        }
+                        name={linkName}
+                      />
+                    </div>
+                  </div>
+                );
+              }
+            )}
+            <div
+              className="pointer"
+              onClick={() =>
+                dispatch({
+                  type: Cases.addFooterLink,
+                })
+              }
+            >
+              +
             </div>
           </div>
         </div>
         <div className="right">
           <div className="right-container">
             {form.showHeader && (
-              <Header data={form?.header} showLogo={form.showLogo} menus={form?.menus} />
+              <Header
+                data={form?.header}
+                showLogo={form.showLogo}
+                menus={form?.menus}
+              />
             )}
             {form?.showSlider && <Slider data={form?.slider} />}
             {form?.showBanner && <Banner data={form?.banner} />}
@@ -568,6 +666,7 @@ const page = () => {
                   data={form?.footer}
                   showLogo={form.showLogo}
                   logo={form?.header?.logoUrl}
+                  links={form?.footerLinks}
                 />
               </div>
             )}

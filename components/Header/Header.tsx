@@ -7,7 +7,7 @@ const Header = ({ data, showLogo , menus}: any) => {
     <div className="header">
       <div className="left-menu">left Menu</div>
       <div className="menus">
-        {menus?.map(({value , link } : any) => <a className="menu-item" href={link}>
+        {menus?.map(({value ,linkValue} : any) => <a className="menu-item" href={linkValue}>
           {value}
         </a> )}
       </div>

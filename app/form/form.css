@@ -45,3 +45,26 @@
     flex-direction: column;
     gap: 10px;
 }
+
+.flex {
+    display: flex;
+}
+
+.j-center {
+    justify-content: center;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+.a-center {
+    align-items: center;
+}
+
+.menuItem {
+    gap: 20px;
+}
+
+.pointer {
+    cursor: pointer;
+}
