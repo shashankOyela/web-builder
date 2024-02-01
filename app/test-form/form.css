@@ -1,0 +1,34 @@
+.page-wrapper {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    height: 95vh;
+}
+
+.left {
+    border-right: 1px solid gray;
+    padding-right: 10px;
+    width: 20%;
+}
+
+.right {
+    width: 80%;
+}
+
+.form-container {
+    border-bottom: 4px solid blue;
+    border-top: 4px solid blue;
+    padding-bottom: 20px;
+}
+
+.form-label {
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.right-container {
+    position: relative;
+    height: 100%;
+}
