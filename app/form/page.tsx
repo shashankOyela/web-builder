@@ -2,7 +2,7 @@
 
 import Header from "@/components/Header/Header";
 import "./form.css";
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import Footer from "@/components/Footer/Footer";
 import Slider from "@/components/Slider/Slider";
 import Banner from "@/components/Banner/Banner";
