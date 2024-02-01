@@ -2,7 +2,7 @@
 
 import Header from "@/components/Header/Header";
 import "./form.css";
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import Footer from "@/components/Footer/Footer";
 import Slider from "@/components/Slider/Slider";
 import Banner from "@/components/Banner/Banner";
@@ -41,13 +41,13 @@ const initialFormValues = {
       label: "First label",
       name: "first",
       value: "",
-      link: ""
+      link: "",
     },
     {
       label: "Second label",
       name: "second",
       value: "",
-      link: ""
+      link: "",
     },
   ],
 };
@@ -176,8 +176,8 @@ const page = () => {
           <div className="form-label-wrapper">
             <p>Menus</p>
             <div className="form-label">
-            {form?.menus?.map(
-                ({ label, name, value , link}: any, index: number) => {
+              {form?.menus?.map(
+                ({ label, name, value, link }: any, index: number) => {
                   return (
                     <>
                       <label>{label}</label>
@@ -199,7 +199,6 @@ const page = () => {
                 }
               )}
             </div>
-        
           </div>
 
           <p className="section-heading">Slider Configuration</p>
@@ -558,7 +557,11 @@ const page = () => {
         <div className="right">
           <div className="right-container">
             {form.showHeader && (
-              <Header data={form?.header} showLogo={form.showLogo} menus={form?.menus} />
+              <Header
+                data={form?.header}
+                showLogo={form.showLogo}
+                menus={form?.menus}
+              />
             )}
             {form?.showSlider && <Slider data={form?.slider} />}
             {form?.showBanner && <Banner data={form?.banner} />}
