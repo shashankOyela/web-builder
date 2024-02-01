@@ -1,0 +1,36 @@
+.footer {
+    border: 2px solid red;
+    height: 150px;
+    position: relative;
+}
+
+.logo-wrapper {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.logo {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.logo_image {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.footer-menu-wrapper {
+    display: flex;
+    gap: 30px;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
+
+.footer-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

@@ -1,0 +1,33 @@
+.header {
+    width: 100%;
+    height: 120px;
+    border: 1px solid #000;
+    position: relative;
+}
+
+.logo-wrapper {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.logo {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.logo_image {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.menus {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
