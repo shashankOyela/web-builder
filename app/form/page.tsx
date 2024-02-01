@@ -2,53 +2,112 @@
 
 import Header from "@/components/Header/Header";
 import "./form.css";
-import { useState } from "react";
+import { useReducer } from "react";
 import Footer from "@/components/Footer/Footer";
 import Slider from "@/components/Slider/Slider";
+import Banner from "@/components/Banner/Banner";
 
-const page = () => {
-  const [showHeader, setShowHeader] = useState<boolean>(true);
-  const [showLogo, setShowLogo] = useState<boolean>(true);
-  const [showSlider, setShowSlider] = useState<boolean>(true);
-  const [header, setHeader] = useState<any>({
+enum Cases {
+  toggleShowHeader = "toggleShowHeader",
+  toggleShowLogo = "toggleShowLogo",
+  handleHeaderChange = "handleHeaderChange",
+  handleFooterChange = "handleFooterChange",
+  toggleShowFooter = "toggleShowFooter",
+  toggleShowSlider = "toggleShowSlider",
+  handleSliderChange = "handleSliderChange",
+  toggleShowBanner = "toggleShowBanner",
+  handleBannerChange = "handleBannerChange",
+}
+
+const initialFormValues = {
+  showHeader: true,
+  showLogo: true,
+  showSlider: true,
+  showFooter: true,
+  showBanner: true,
+  header: {
     logoUrl:
       "https://public-oyela-cms-prod.s3.ap-south-1.amazonaws.com/7_bce21bf9e3.jpg",
     showLogo: true,
-  });
-  const [showFooter, setShowFooter] = useState<boolean>(true);
-  const [footer, setFooter] = useState<any>({});
+  },
+  footer: {},
+  banner: {},
+  slider: {},
+};
 
-  const handleHeaderChange = (e: any) => {
-    e.preventDefault();
-    const name = e.target.name;
-    setHeader({
-      ...header,
-      [name]: e.target.value,
-    });
+const page = () => {
+  const formReducer = (form: any, action: any) => {
+    switch (action?.type) {
+      case Cases.toggleShowHeader: {
+        return {
+          ...form,
+          showHeader: action.checked,
+        };
+      }
+      case Cases.toggleShowLogo: {
+        return { ...form, showLogo: action.checked };
+      }
+      case Cases.handleHeaderChange: {
+        const name = action.event.target.name;
+        const value = action.event.target.value;
+        return { ...form, header: { ...form.header, [name]: value } };
+      }
+      case Cases.handleFooterChange: {
+        const name = action.event.target.name;
+        const value = action.event.target.value;
+        return { ...form, footer: { ...form.footer, [name]: value } };
+      }
+      case Cases.toggleShowFooter: {
+        return {
+          ...form,
+          showFooter: action.checked,
+        };
+      }
+      case Cases.toggleShowSlider: {
+        return {
+          ...form,
+          showSlider: action.checked,
+        };
+      }
+      case Cases.handleSliderChange: {
+        const name = action.event.target.name;
+        const value = action.event.target.value;
+        return { ...form, slider: { ...form.slider, [name]: value } };
+      }
+      case Cases.toggleShowBanner: {
+        return {
+          ...form,
+          showBanner: action.checked,
+        };
+      }
+      case Cases.handleBannerChange: {
+        const name = action.event.target.name;
+        const value = action.event.target.value;
+        return { ...form, banner: { ...form.banner, [name]: value } };
+      }
+    }
   };
 
-  const handleFooterChange = (e: any) => {
-    e.preventDefault();
-    const name = e.target.name;
-    setFooter({
-      ...footer,
-      [name]: e.target.value,
-    });
-  };
+  const [form, dispatch] = useReducer(formReducer, initialFormValues);
 
   return (
-    <main className="page-wrapper">
-      <div className="left">
-        <p>Header Configuration</p>
-        <form className="form-container">
+    <form>
+      <main className="page-wrapper">
+        <div className="left">
+          <p>Header Configuration</p>
           <div className="form-label">
             <div>
               <label>Header : </label>
               <input
                 type="checkbox"
-                onChange={() => setShowHeader(!showHeader)}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.toggleShowHeader,
+                    checked: e.target.checked,
+                  })
+                }
                 name="showHeader"
-                checked={showHeader}
+                checked={form.showHeader}
               />{" "}
               Show/Hide
             </div>
@@ -58,9 +117,14 @@ const page = () => {
               <label>Logo : </label>
               <input
                 type="checkbox"
-                onChange={() => setShowLogo(!showLogo)}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.toggleShowLogo,
+                    checked: e.target.checked,
+                  })
+                }
                 name="showLogo"
-                checked={showLogo}
+                checked={form.showLogo}
               />{" "}
               Show/Hide
             </div>
@@ -68,10 +132,16 @@ const page = () => {
           <div className="form-label">
             <label>Enter Logo url : </label>
             <input
-              onChange={handleHeaderChange}
+              onChange={(e) =>
+                dispatch({
+                  type: Cases.handleHeaderChange,
+                  event: e,
+                })
+              }
+              //   onChange={handleHeaderChange}
               placeholder="Enter Header content"
               name="logoUrl"
-              value={header?.logoUrl}
+              value={form.header?.logoUrl}
             />
           </div>
           <div className="form-label-wrapper">
@@ -79,155 +149,350 @@ const page = () => {
             <div className="form-label">
               <label>Menu Item 1</label>
               <input
-                value={header?.menuItem1}
+                value={form?.header?.menuItem1}
                 placeholder="text"
-                onChange={handleHeaderChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleHeaderChange,
+                    event: e,
+                  })
+                }
                 name="menuItem1"
               />
               <input
-                value={header?.menuItem1Val}
+                value={form?.header?.menuItem1Val}
                 placeholder="link"
-                onChange={handleHeaderChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleHeaderChange,
+                    event: e,
+                  })
+                }
                 name="menuItem1Val"
               />
             </div>
             <div className="form-label">
               <label>Menu Item 2</label>
               <input
-                value={header?.menuItem2}
+                value={form?.header?.menuItem2}
                 placeholder="text"
-                onChange={handleHeaderChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleHeaderChange,
+                    event: e,
+                  })
+                }
                 name="menuItem2"
               />
               <input
-                value={header?.menuItem2Val}
+                value={form?.header?.menuItem2Val}
                 placeholder="link"
-                onChange={handleHeaderChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleHeaderChange,
+                    event: e,
+                  })
+                }
                 name="menuItem2Val"
               />
             </div>
             <div className="form-label">
               <label>Menu Item 3</label>
               <input
-                value={header?.menuItem3}
+                value={form?.header?.menuItem3}
                 placeholder="text"
-                onChange={handleHeaderChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleHeaderChange,
+                    event: e,
+                  })
+                }
                 name="menuItem3"
               />
               <input
-                value={header?.menuItem3Val}
+                value={form?.header?.menuItem3Val}
                 placeholder="link"
-                onChange={handleHeaderChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleHeaderChange,
+                    event: e,
+                  })
+                }
                 name="menuItem3Val"
               />
             </div>
             <div className="form-label">
               <label>Menu Item 4</label>
               <input
-                value={header?.menuItem4}
+                value={form?.header?.menuItem4}
                 placeholder="text"
-                onChange={handleHeaderChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleHeaderChange,
+                    event: e,
+                  })
+                }
                 name="menuItem4"
               />
               <input
-                value={header?.menuItem4Val}
+                value={form?.header?.menuItem4Val}
                 placeholder="link"
-                onChange={handleHeaderChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleHeaderChange,
+                    event: e,
+                  })
+                }
                 name="menuItem4Val"
               />
             </div>
           </div>
-        </form>
 
-        <p>Slider Configuration</p>
-        <form className="form-container">
+          <p className="section-heading">Slider Configuration</p>
           <div className="form-label">
             <div>
               <label>Slider : </label>
               <input
                 type="checkbox"
-                onChange={() => setShowSlider(!showSlider)}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.toggleShowSlider,
+                    checked: e.target.checked,
+                  })
+                }
                 name="showFooter"
-                checked={showSlider}
+                checked={form?.showSlider}
               />{" "}
               Show/Hide
             </div>
+          </div>
+          <div className="form-label">
+            <label>Slide Duration(in ms)</label>
+            <input
+              value={form?.slider?.slideDuration}
+              placeholder="slide Duration"
+              type="number"
+              onChange={(e) =>
+                dispatch({
+                  type: Cases.handleSliderChange,
+                  event: e,
+                })
+              }
+              name="slideDuration"
+            />
           </div>
           <div className="form-label-wrapper">
             <p>Slides</p>
             <div className="form-label">
               <label>Slide 1</label>
               <input
-                value={footer?.link1}
+                value={form?.slider?.slide1Heading}
                 placeholder="text"
-                onChange={handleFooterChange}
-                name="link1"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide1Heading"
               />
               <input
-                value={footer?.link1Val}
-                placeholder="link"
-                onChange={handleFooterChange}
-                name="link1Val"
+                value={form?.slider?.slide1Image}
+                placeholder="slideImage"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide1Image"
+              />
+              <input
+                value={form?.slider?.slide1Link}
+                placeholder="slideLink"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide1Link"
               />
             </div>
             <div className="form-label">
               <label>Slide 2</label>
               <input
-                value={footer?.link2}
+                value={form?.slider?.slide2Heading}
                 placeholder="text"
-                onChange={handleFooterChange}
-                name="link2"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide2Heading"
               />
               <input
-                value={footer?.link2Val}
-                placeholder="link"
-                onChange={handleFooterChange}
-                name="link2Val"
+                value={form?.slider?.slide2Image}
+                placeholder="slideImage"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide2Image"
+              />
+              <input
+                value={form?.slider?.slide2Link}
+                placeholder="slideLink"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide2Link"
               />
             </div>
             <div className="form-label">
               <label>Slide 3</label>
               <input
-                value={footer?.link3}
+                value={form?.slider?.slide3Heading}
                 placeholder="text"
-                onChange={handleFooterChange}
-                name="link3"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide3Heading"
               />
               <input
-                value={footer?.link3Val}
-                placeholder="link"
-                onChange={handleFooterChange}
-                name="link3Val"
+                value={form?.slider?.slide3Image}
+                placeholder="slideImage"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide3Image"
+              />
+              <input
+                value={form?.slider?.slide3Link}
+                placeholder="slideLink"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide3Link"
               />
             </div>
             <div className="form-label">
               <label>Slide 4</label>
               <input
-                value={footer?.link4}
+                value={form?.slider?.slide4Heading}
                 placeholder="text"
-                onChange={handleFooterChange}
-                name="link4"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide4Heading"
               />
               <input
-                value={footer?.link4Val}
-                placeholder="link"
-                onChange={handleFooterChange}
-                name="link4Val"
+                value={form?.slider?.slide4Image}
+                placeholder="slideImage"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide4Image"
+              />
+              <input
+                value={form?.slider?.slide4Link}
+                placeholder="slideLink"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleSliderChange,
+                    event: e,
+                  })
+                }
+                name="slide4Link"
               />
             </div>
           </div>
-        </form>
 
-        <p>Footer Configuration</p>
-        <form className="form-container">
+          <p className="section-heading">Banner Configuration</p>
+
+          <div className="form-label">
+            <div>
+              <label>Banner : </label>
+              <input
+                type="checkbox"
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.toggleShowBanner,
+                    checked: e.target.checked,
+                  })
+                }
+                name="showBanner"
+                checked={form?.showBanner}
+              />{" "}
+              Show/Hide
+            </div>
+          </div>
+          <div className="form-label-wrapper">
+            <div className="form-label">
+              <label>Banner Image</label>
+              <input
+                name="bannerImage"
+                type="text"
+                value={form?.banner?.bannerImage}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleBannerChange,
+                    event: e,
+                  })
+                }
+              />
+            </div>
+            <div className="form-label">
+              <label>Banner Heading</label>
+              <input
+                type="text"
+                name="bannerHeading"
+                value={form?.banner?.heading}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleBannerChange,
+                    event: e,
+                  })
+                }
+              />
+            </div>
+          </div>
+
+          <p>Footer Configuration</p>
           <div className="form-label">
             <div>
               <label>Footer : </label>
               <input
                 type="checkbox"
-                onChange={() => setShowFooter(!showFooter)}
+                onChange={(e) =>
+                  dispatch({
+                    type: "toggleShowFooter",
+                    checked: e.target.checked,
+                  })
+                }
                 name="showFooter"
-                checked={showFooter}
+                checked={form?.showFooter}
               />{" "}
               Show/Hide
             </div>
@@ -237,82 +502,125 @@ const page = () => {
             <div className="form-label">
               <label>Link 1</label>
               <input
-                value={footer?.link1}
+                value={form?.footer?.link1}
                 placeholder="text"
-                onChange={handleFooterChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleFooterChange,
+                    event: e,
+                  })
+                }
                 name="link1"
               />
               <input
-                value={footer?.link1Val}
+                value={form?.footer?.link1Val}
                 placeholder="link"
-                onChange={handleFooterChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleFooterChange,
+                    event: e,
+                  })
+                }
                 name="link1Val"
               />
             </div>
             <div className="form-label">
               <label>Link 2</label>
               <input
-                value={footer?.link2}
+                value={form?.footer?.link2}
                 placeholder="text"
-                onChange={handleFooterChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleFooterChange,
+                    event: e,
+                  })
+                }
                 name="link2"
               />
               <input
-                value={footer?.link2Val}
+                value={form?.footer?.link2Val}
                 placeholder="link"
-                onChange={handleFooterChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleFooterChange,
+                    event: e,
+                  })
+                }
                 name="link2Val"
               />
             </div>
             <div className="form-label">
               <label>Link 3</label>
               <input
-                value={footer?.link3}
+                value={form?.footer?.link3}
                 placeholder="text"
-                onChange={handleFooterChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleFooterChange,
+                    event: e,
+                  })
+                }
                 name="link3"
               />
               <input
-                value={footer?.link3Val}
+                value={form?.footer?.link3Val}
                 placeholder="link"
-                onChange={handleFooterChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleFooterChange,
+                    event: e,
+                  })
+                }
                 name="link3Val"
               />
             </div>
             <div className="form-label">
               <label>Link 4</label>
               <input
-                value={footer?.link4}
+                value={form?.footer?.link4}
                 placeholder="text"
-                onChange={handleFooterChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleFooterChange,
+                    event: e,
+                  })
+                }
                 name="link4"
               />
               <input
-                value={footer?.link4Val}
+                value={form?.footer?.link4Val}
                 placeholder="link"
-                onChange={handleFooterChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: Cases.handleFooterChange,
+                    event: e,
+                  })
+                }
                 name="link4Val"
               />
             </div>
           </div>
-        </form>
-      </div>
-      <div className="right">
-        <div className="right-container">
-          {showHeader && <Header data={header} showLogo={showLogo} />}
-          {showSlider && <Slider />}
-          {showFooter && (
-            <div className="footer-wrapper">
-              <Footer
-                data={footer}
-                showLogo={showLogo}
-                logo={header?.logoUrl}
-              />
-            </div>
-          )}
         </div>
-      </div>
-    </main>
+        <div className="right">
+          <div className="right-container">
+            {form.showHeader && (
+              <Header data={form?.header} showLogo={form.showLogo} />
+            )}
+            {form?.showSlider && <Slider data={form?.slider} />}
+            {form?.showBanner && <Banner data={form?.banner} />}
+            {form?.showFooter && (
+              <div className="footer-wrapper">
+                <Footer
+                  data={form?.footer}
+                  showLogo={form.showLogo}
+                  logo={form?.header?.logoUrl}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+    </form>
   );
 };
 
