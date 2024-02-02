@@ -7,8 +7,9 @@ import Footer from "@/components/Footer/Footer";
 import Slider from "@/components/Slider/Slider";
 import Banner from "@/components/Banner/Banner";
 import { customApiPost, customApiGet, connectToMongo } from "@/mongo";
+import Editor from "@/components/Editor/Editor";
 
-enum Cases {
+export enum Cases {
   toggleShowHeader = "toggleShowHeader",
   toggleShowLogo = "toggleShowLogo",
   handleHeaderChange = "handleHeaderChange",
@@ -25,6 +26,7 @@ enum Cases {
   addFooterLink = "addFooterLink",
   removeFooterLink = "removeFooterLink",
   setFormState = "setFormState",
+  setEditorData = "setEditorData",
 }
 
 const initialFormValues = {
@@ -67,6 +69,7 @@ const initialFormValues = {
       linkValue: "",
     },
   ],
+  editorData: "",
 };
 
 const page = () => {
@@ -220,6 +223,13 @@ const page = () => {
           footerLinks: [...copiedArray],
         };
       }
+
+      case Cases.setEditorData: {
+        return {
+          ...form,
+          editorData: action.editorData,
+        };
+      }
     }
   };
 
@@ -236,7 +246,6 @@ const page = () => {
 
   const fetchConfigurations = async () => {
     const apiResponse = await customApiGet({ endPoint: "api" });
-    // console.log("apiResponse", apiResponse);
 
     dispatch({ type: Cases.setFormState, form: apiResponse?.data[0] });
   };
@@ -554,6 +563,11 @@ const page = () => {
             </div>
           </div>
 
+          <p className="section-heading">Editor Configuration</p>
+          <div className="form-label">
+            <Editor dispatch={dispatch} />
+          </div>
+
           <p className="section-heading">Banner Configuration</p>
 
           <div className="form-label">
@@ -700,6 +714,13 @@ const page = () => {
             )}
             {form?.showSlider && <Slider data={form?.slider} />}
             {form?.showBanner && <Banner data={form?.banner} />}
+            <div className="editor-wrapper">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: form?.editorData,
+                }}
+              />
+            </div>
             {form?.showFooter && (
               <div className="footer-wrapper">
                 <Footer
