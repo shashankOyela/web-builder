@@ -17,10 +17,17 @@ export async function POST(request: Request, res: NextResponse) {
   const data = await request.json();
 
   try {
-    console.log("resdfsflk request", request.body);
-    await WebConfigurationModel.create(data);
-
-    return NextResponse.json({ data });
+    if (data?._id?.length > 0) {
+      const { _id, ...restOfData } = data;
+      const updatedRes = await WebConfigurationModel.findOneAndUpdate(
+        { _id: data?._id },
+        restOfData
+      );
+      return NextResponse.json({ data: updatedRes });
+    } else {
+      const createdRes = await WebConfigurationModel.create(data);
+      return NextResponse.json({ data: createdRes });
+    }
   } catch (error) {
     console.log("could not add data", error);
   }

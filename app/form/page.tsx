@@ -236,10 +236,12 @@ const page = () => {
 
   const fetchConfigurations = async () => {
     const apiResponse = await customApiGet({ endPoint: "api" });
-    console.log("apiResponse", apiResponse);
+    // console.log("apiResponse", apiResponse);
 
     dispatch({ type: Cases.setFormState, form: apiResponse?.data[0] });
   };
+
+  console.log("form", form);
 
   useEffect(() => {
     fetchConfigurations();
